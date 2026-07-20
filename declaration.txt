@@ -1,0 +1,76 @@
+接下来，请你写好gitignore文件，先更新一下readme(已经迁移到~/smatrboat文件夹内了），然后帮我把仅代码+迁移容器所必须要的代码打包成一个.git文件（去除所有编译缓存运行缓存，但git包里要有那些个测试用例），方便我在另一个登陆了我的github账号的windows电脑上原样推到github上。
+
+
+
+10:43
+
+
+
+
+
+
+已处理 7m 8s
+
+
+
+已完成。
+生成在 ~/smartboat 根目录：
+[smartboat-github-ready.bundle](/home/ubuntu2204/smartboat/smartboat-github-ready.bundle)：Git bundle，适合在 Windows 上 clone 后推 GitHub
+[smartboat-github-ready.tar.gz](/home/ubuntu2204/smartboat/smartboat-github-ready.tar.gz)：同一份干净源码的普通压缩包
+[smartboat-runtime-assets.tar.gz](/home/ubuntu2204/smartboat/smartboat-runtime-assets.tar.gz)：模型 + wheel，用来手动上传 GitHub Release
+我也更新了：
+[.gitignore](/home/ubuntu2204/smartboat/.gitignore)：忽略 build/install/log、__pycache__、TensorRT cache、librealsense、模型、wheel、废弃 demo、.bak
+[readme.md](/home/ubuntu2204/smartboat/readme.md)：说明 ~/smartboat 是 Git 根目录、模型/wheel 走 Release 资产包、viz demo 已解耦
+核对结果：
+源码 bundle 里没有 build/ install/ log/ __pycache__/ trt_engine_cache/ librealsense/ .onnx .whl .bak
+测试用例已保留：boat_ws/scripts/test_*.py 和 smartboat_bringup/test/*.py
+realsense_ewasr_fusion_avoidance_viz_demo.py 语法检查通过
+Git bundle 验证通过，包含完整 main 分支历史
+Windows 上使用：
+git clone smartboat-github-ready.bundle smartboat
+cd smartboat
+git remote add origin <你的GitHub仓库地址>
+git push -u origin main
+Release 资产上传 smartboat-runtime-assets.tar.gz 即可。
+
+readme.md文档 · MD打开预览打开方式
+
+
+
+10:50
+
+
+
+
+
+
+我知道windows和linux上什么什么crlf不太一样，这样真的没事吗？帮我在仓库里加 .gitattributes什么什么的，然后重新打包，删除旧文件防止我迷糊了
+
+
+
+12:29
+
+
+
+
+
+
+已处理 2m 1s
+
+
+
+没问题，现在已经补好了 .gitattributes 并重新打包，旧文件也已先删再重建，根目录只保留最新这三份：
+[smartboat-github-ready.bundle](/home/ubuntu2204/smartboat/smartboat-github-ready.bundle)
+[smartboat-github-ready.tar.gz](/home/ubuntu2204/smartboat/smartboat-github-ready.tar.gz)
+[smartboat-runtime-assets.tar.gz](/home/ubuntu2204/smartboat/smartboat-runtime-assets.tar.gz)
+新增的 [.gitattributes](/home/ubuntu2204/smartboat/.gitattributes) 做了这些事：
+源码、.py、.sh、Dockerfile、YAML、XML、Markdown 等统一按 LF
+.onnx、.whl、压缩包、图片、.so/.a/.o 等标记为 binary
+避免 Windows 上 checkout/编辑后把 Linux 脚本弄成 CRLF
+验证结果：
+Git bundle 验证通过
+bundle 里包含 .gitattributes 和 .gitignore
+源码包里没有 build/install/log/cache/librealsense/onnx/whl/bak
+测试用例仍保留
+Release 资产包只包含 boat_ws/models/ 和 boat_ws/wheels/
+打包时 Git 还提示了几个旧 USB-CAN 文件原本是 CRLF，现在会在仓库中规范成 LF，这正好说明这次加 .gitattributes 是有用的。
